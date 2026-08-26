@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>
+(function(){
+  var domainesAutorises = ["alain-pronostic-ia.netlify.app"];
+  if (domainesAutorises.indexOf(window.location.hostname) === -1) {
+    document.open();
+    document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title></title></head><body style="margin:0;background:#ffffff;height:100vh;"></body></html>');
+    document.close();
+  }
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0b3d1f">
 <title>Alain Pronostic IA - Analyse Football Expert</title>
+<meta name="description" content="Alain Pronostic IA analyse la forme des équipes et te donne en quelques secondes un pronostic de match, un niveau de confiance et un ticket combiné, grâce à l'intelligence artificielle.">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-192x192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -22,7 +39,23 @@
     --white:#f4fff7;
   }
 
-  *{box-sizing:border-box;}
+  *{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color: transparent; /* retire le flash bleu au tap sur mobile */
+  }
+
+  html, body{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none; /* désactive la sélection/copie de texte */
+  }
+
+  /* On laisse quand même la sélection possible dans les champs de saisie */
+  input, textarea{
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+  }
 
   html{
     height:100%;
@@ -57,6 +90,31 @@
     z-index:0;
     filter: drop-shadow(0 0 6px rgba(0,0,0,.4));
   }
+  .bouton-whatsapp{
+    position:fixed;
+    bottom:22px;
+    right:22px;
+    z-index:60;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:#25D366;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 8px 20px rgba(0,0,0,.4);
+    text-decoration:none;
+    animation: apparaitre .6s ease-out .3s both;
+    transition: transform .15s ease;
+  }
+  .bouton-whatsapp:hover{ transform: scale(1.08); }
+  .bouton-whatsapp svg{ width:30px; height:30px; }
+
+  @media (max-width:480px){
+    .bouton-whatsapp{ bottom:16px; right:16px; width:50px; height:50px; }
+    .bouton-whatsapp svg{ width:26px; height:26px; }
+  }
+
   .ballon-deco.b1{ top:8%; left:6%; animation-delay:0s; }
   .ballon-deco.b2{ top:70%; left:88%; animation-delay:2s; font-size:3rem;}
   .ballon-deco.b3{ top:85%; left:10%; animation-delay:4s; font-size:1.8rem;}
@@ -873,6 +931,14 @@
 
   </div>
 
+  <a href="https://wa.me/221700087001?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20Alain%20Pronostic%20IA"
+     class="bouton-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Nous contacter sur WhatsApp">
+    <svg viewBox="0 0 24 24" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12.012 2c-5.506 0-9.98 4.474-9.98 9.98 0 1.76.46 3.482 1.334 4.997L2 22l5.164-1.354a9.94 9.94 0 0 0 4.848 1.234h.004c5.506 0 9.98-4.474 9.98-9.98 0-2.665-1.037-5.17-2.922-7.055A9.933 9.933 0 0 0 12.012 2zm0 18.26h-.003a8.28 8.28 0 0 1-4.223-1.156l-.303-.18-3.066.804.818-2.988-.197-.306a8.27 8.27 0 0 1-1.269-4.454c0-4.567 3.716-8.283 8.286-8.283a8.23 8.23 0 0 1 5.858 2.428 8.23 8.23 0 0 1 2.425 5.858c0 4.568-3.716 8.284-8.284 8.284z"/>
+    </svg>
+  </a>
+
 <script>
   // Lien direct Monetag : ouvert dans un nouvel onglet à chaque génération de pronostic valide
   const MONETAG_LIEN = "https://omg10.com/4/10252809";
@@ -1086,6 +1152,8 @@
   }
 
   let requeteEnCours = false;
+  let prochainAppelAutorise = 0; // timestamp epoch ms, anti-spam pour respecter le quota gratuit Gemini
+  const COOLDOWN_MS = 4000; // ~4s entre deux analyses (le tier gratuit Gemini limite à quelques requêtes/minute)
   let dernierParams = null;
   let modeComparaison = false;
   let comparaisonListe = [];
@@ -1141,6 +1209,18 @@
 
   async function genererAvecParams({ equipeA, equipeB, contexte, competition }){
     if (requeteEnCours) return;
+
+    const maintenant = Date.now();
+    if (maintenant < prochainAppelAutorise) {
+      const secondesRestantes = Math.ceil((prochainAppelAutorise - maintenant) / 1000);
+      afficherErreur({
+        icone: "⏳",
+        titre: "Un instant...",
+        detail: `Merci de patienter encore ${secondesRestantes}s avant une nouvelle analyse (pour respecter le quota gratuit de l'IA).`,
+        reessayable: false
+      });
+      return;
+    }
 
     dernierParams = { equipeA, equipeB, contexte, competition };
     requeteEnCours = true;
@@ -1211,6 +1291,7 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
     } finally {
       clearTimeout(delaiTimeout);
       requeteEnCours = false;
+      prochainAppelAutorise = Date.now() + COOLDOWN_MS;
       btn.disabled = false;
       btnTexte.textContent = modeComparaison ? texteBoutonAvant : "🔄 Générer un autre Pronostic";
     }
@@ -1466,6 +1547,13 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
     }
   }
 
+  document.addEventListener('copy', (e) => {
+    if (!['INPUT','TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+  });
+  document.addEventListener('contextmenu', (e) => {
+    if (!['INPUT','TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+  });
+
   document.addEventListener('DOMContentLoaded', () => {
     construirePanelCompetition();
 
@@ -1590,4 +1678,4 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
   }
 </script>
 </body>
-</html>
+  </html>
