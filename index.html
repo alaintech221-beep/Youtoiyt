@@ -13,19 +13,9 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b1020">
+<meta name="theme-color" content="#0b3d1f">
 <title>Alain Pronostic IA - Analyse Football Expert</title>
 <meta name="description" content="Alain Pronostic IA analyse la forme des équipes et te donne en quelques secondes un pronostic de match, un niveau de confiance et un ticket combiné, grâce à l'intelligence artificielle.">
-
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://alain-pronostic-ia.netlify.app/">
-<meta property="og:title" content="Alain Pronostic IA — Ton analyste football intelligent">
-<meta property="og:description" content="Analyse les matchs, compare les statistiques et identifie les marchés les plus intéressants grâce à l'IA. Estimations à titre indicatif, jamais une garantie de gain.">
-<meta property="og:image" content="/favicon-192x192.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alain Pronostic IA — Ton analyste football intelligent">
-<meta name="twitter:description" content="Analyse les matchs et identifie les marchés les plus intéressants grâce à l'IA. Jouez de manière responsable.">
-<link rel="canonical" href="https://alain-pronostic-ia.netlify.app/">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
@@ -37,23 +27,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root{
-    /* -- Fond "tableau tactique" (au lieu de la pelouse) -- */
-    --grass-1:#0b1020;
-    --grass-2:#161d3c;
-    /* -- Accent chaleureux conservé pour les CTA et le verdict -- */
-    --gold:#ffb020;
-    --gold-dark:#c97e0a;
-    --ink:#080b17;
-    --paper:#131a34;
-    --line: rgba(255,255,255,.12);
-    /* -- Feux tricolores de risque -- */
-    --red:#ff5d6a;
-    --green:#2fd888;
-    --orange:#ffa93c;
-    --white:#eef1ff;
-    /* -- Bleu / violet moderne demandés pour l'identité -- */
-    --violet:#7c6cf0;
-    --blue:#3d8bfd;
+    --grass-1:#0b3d1f;
+    --grass-2:#136f34;
+    --gold:#ffc93c;
+    --gold-dark:#e0a800;
+    --ink:#0e1a12;
+    --paper:#0f2417;
+    --line: rgba(255,255,255,.14);
+    --red:#ff5d5d;
+    --green:#7fd9a0;
+    --white:#f4fff7;
   }
 
   *{
@@ -76,21 +59,15 @@
 
   html{
     height:100%;
-    scroll-behavior: smooth;
     background:
-      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px),
-      radial-gradient(circle at 18% 8%, rgba(124,108,240,.35), transparent 42%),
-      radial-gradient(circle at 85% 78%, rgba(61,139,253,.28), transparent 45%),
-      linear-gradient(160deg, var(--grass-1), var(--grass-2));
-    background-size: 44px 44px, 44px 44px, auto, auto, auto;
+      linear-gradient(rgba(255,255,255,.05) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 2px, transparent 2px),
+      radial-gradient(circle at 20% 10%, rgba(255,255,255,.05), transparent 40%),
+      repeating-linear-gradient(90deg, var(--grass-1) 0 80px, var(--grass-2) 80px 160px);
+    background-size: 60px 60px, 60px 60px, auto, auto;
     background-color: var(--grass-1);
     background-attachment: fixed;
     overscroll-behavior-y: none;
-  }
-  @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior: auto; }
-    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
   }
 
   body{
@@ -148,53 +125,6 @@
     50%{ transform: translateY(-30px) rotate(180deg); }
   }
 
-  body{ padding-bottom:0; }
-  @media (max-width:680px){
-    body{ padding-bottom:78px; } /* laisse la place à la nav mobile basse */
-    .bouton-whatsapp{ bottom:84px; }
-  }
-
-  /* ---------- Navbar ---------- */
-  .navbar{
-    position:sticky; top:0; z-index:50;
-    display:flex; align-items:center; justify-content:space-between;
-    gap:14px;
-    padding:14px 20px;
-    background: rgba(11,16,32,.7);
-    backdrop-filter: blur(14px);
-    border-bottom:1px solid var(--line);
-  }
-  .navbar-logo{
-    display:flex; align-items:center; gap:8px;
-    font-family:'Bebas Neue', sans-serif;
-    font-size:1.15rem; letter-spacing:.5px;
-    color:var(--white);
-    text-decoration:none;
-  }
-  .navbar-logo .balle{ color:var(--gold); }
-  .navbar-liens{ display:flex; align-items:center; gap:6px; }
-  .navbar-lien{
-    display:flex; align-items:center; gap:6px;
-    font-size:.82rem; font-weight:600;
-    color: rgba(238,241,255,.65);
-    text-decoration:none;
-    padding:8px 13px;
-    border-radius:10px;
-    transition: background .15s, color .15s;
-    border:none; background:none; cursor:pointer; font-family:inherit;
-  }
-  .navbar-lien:hover{ color:var(--white); background: rgba(255,255,255,.06); }
-  .navbar-lien.bientot{ opacity:.45; cursor:default; }
-  .navbar-lien .puce-bientot{
-    font-size:.6rem; text-transform:uppercase; letter-spacing:.5px;
-    background: rgba(255,255,255,.1); padding:1px 6px; border-radius:99px;
-  }
-  @media (max-width:680px){
-    .navbar-liens .texte-lien{ display:none; }
-    .navbar-liens .bientot{ display:none; } /* déjà présents dans la nav basse mobile */
-    .navbar-liens{ gap:2px; }
-  }
-
   .wrap{
     position:relative;
     z-index:1;
@@ -205,186 +135,9 @@
 
   header{
     text-align:center;
-    margin-bottom:20px;
+    margin-bottom:28px;
     animation: apparaitre .6s ease-out;
-    scroll-margin-top:70px;
   }
-
-  .hero-tagline{
-    font-family:'Bebas Neue', sans-serif;
-    font-size:1.3rem;
-    letter-spacing:.5px;
-    color: var(--gold);
-    margin:10px 0 2px;
-  }
-
-  .hero-cta-row{
-    display:flex; flex-wrap:wrap;
-    gap:12px;
-    justify-content:center;
-    margin-top:22px;
-  }
-  .btn-cta{
-    font-family:'Bebas Neue', sans-serif;
-    font-size:1.05rem;
-    letter-spacing:.8px;
-    padding:14px 24px;
-    border-radius:13px;
-    text-decoration:none;
-    cursor:pointer;
-    border:none;
-    transition: transform .12s ease, box-shadow .12s ease;
-  }
-  .btn-cta-principal{
-    color:var(--ink);
-    background: linear-gradient(180deg, #ffd27a, var(--gold) 60%, var(--gold-dark));
-    box-shadow: 0 5px 0 #9c6208, 0 8px 16px rgba(0,0,0,.3);
-  }
-  .btn-cta-principal:active{ transform:translateY(3px); box-shadow:0 2px 0 #9c6208; }
-  .btn-cta-secondaire{
-    color:var(--white);
-    background: rgba(255,255,255,.07);
-    border:1.5px solid var(--line);
-    box-shadow:none;
-  }
-  .btn-cta-secondaire:hover{ background: rgba(255,255,255,.13); }
-
-  .disclaimer-banner{
-    display:flex; align-items:flex-start; gap:10px;
-    background: rgba(255,169,60,.1);
-    border:1px solid rgba(255,169,60,.35);
-    color: rgba(238,241,255,.85);
-    padding:12px 16px;
-    border-radius:14px;
-    font-size:.78rem;
-    line-height:1.5;
-    margin:22px 0;
-  }
-  .disclaimer-banner .icone{ font-size:1.05rem; flex-shrink:0; }
-  .disclaimer-banner strong{ color: var(--orange); }
-  .disclaimer-banner > span:last-child{ flex:1; min-width:0; }
-
-  /* ---------- Cartes fonctionnalités ---------- */
-  .feature-grid{
-    display:grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap:14px;
-    margin: 30px 0;
-  }
-  @media (max-width:680px){
-    .feature-grid{ grid-template-columns: 1fr; }
-  }
-  .feature-card{
-    background: linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.015));
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:20px 18px;
-    animation: apparaitre .6s ease-out both;
-  }
-  .feature-card .feature-icone{
-    font-size:1.6rem;
-    display:inline-flex;
-    width:44px; height:44px;
-    align-items:center; justify-content:center;
-    border-radius:12px;
-    margin-bottom:12px;
-    background: linear-gradient(135deg, rgba(124,108,240,.28), rgba(61,139,253,.2));
-  }
-  .feature-card h3{
-    font-family:'Bebas Neue', sans-serif;
-    font-size:1.15rem;
-    letter-spacing:.5px;
-    margin:0 0 6px;
-    color:var(--white);
-  }
-  .feature-card p{
-    font-size:.85rem;
-    line-height:1.5;
-    color: rgba(238,241,255,.62);
-    margin:0;
-  }
-
-  /* ---------- Comment ça marche ---------- */
-  .section-titre{
-    font-family:'Bebas Neue', sans-serif;
-    font-size:1.5rem;
-    letter-spacing:.5px;
-    text-align:center;
-    color:var(--white);
-    margin: 44px 0 18px;
-    scroll-margin-top:70px;
-  }
-  .etapes-liste{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-  .etape-item{
-    display:flex;
-    align-items:flex-start;
-    gap:14px;
-    background: rgba(255,255,255,.05);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:14px 16px;
-  }
-  .etape-numero{
-    font-family:'Bebas Neue', sans-serif;
-    flex-shrink:0;
-    width:32px; height:32px;
-    border-radius:50%;
-    background: linear-gradient(135deg, var(--violet), var(--blue));
-    color:var(--white);
-    display:flex; align-items:center; justify-content:center;
-    font-size:1rem;
-  }
-  .etape-texte strong{ display:block; color:var(--white); font-size:.92rem; margin-bottom:2px; }
-  .etape-texte span{ font-size:.8rem; color: rgba(238,241,255,.6); }
-
-  /* ---------- Nav mobile basse ---------- */
-  .bottom-nav{
-    position:fixed; left:0; right:0; bottom:0; z-index:55;
-    display:none;
-    justify-content:space-around;
-    align-items:center;
-    background: rgba(11,16,32,.92);
-    backdrop-filter: blur(14px);
-    border-top:1px solid var(--line);
-    padding:8px 4px calc(8px + env(safe-area-inset-bottom));
-  }
-  @media (max-width:680px){
-    .bottom-nav{ display:flex; }
-  }
-  .bottom-nav-item{
-    display:flex; flex-direction:column; align-items:center; gap:2px;
-    background:none; border:none; cursor:pointer;
-    color: rgba(238,241,255,.55);
-    font-size:.65rem; font-weight:600;
-    padding:6px 8px;
-    border-radius:10px;
-    font-family:inherit;
-  }
-  .bottom-nav-item .icone-nav{ font-size:1.2rem; }
-  .bottom-nav-item.actif{ color: var(--gold); }
-  .bottom-nav-item.verrouille{ opacity:.4; }
-  .toast-bientot{
-    position:fixed;
-    left:50%; bottom:80px;
-    transform: translateX(-50%) translateY(10px);
-    background: var(--paper);
-    border:1px solid var(--line);
-    color:var(--white);
-    padding:10px 18px;
-    border-radius:99px;
-    font-size:.78rem;
-    font-weight:600;
-    box-shadow:0 10px 24px rgba(0,0,0,.4);
-    opacity:0;
-    pointer-events:none;
-    transition: opacity .2s ease, transform .2s ease;
-    z-index:70;
-  }
-  .toast-bientot.visible{ opacity:1; transform: translateX(-50%) translateY(0); }
 
   .badge-stade{
     display:inline-flex;
@@ -402,8 +155,8 @@
   }
   .badge-stade .dot{
     width:8px;height:8px;border-radius:50%;
-    background: var(--violet);
-    box-shadow:0 0 8px var(--violet);
+    background: var(--red);
+    box-shadow:0 0 8px var(--red);
     animation: pulse 1.4s infinite;
   }
   @keyframes pulse{
@@ -431,7 +184,7 @@
   }
 
   header p{
-    color: rgba(238,241,255,.7);
+    color: rgba(244,255,247,.7);
     margin-top:8px;
     font-size:.95rem;
   }
@@ -454,7 +207,7 @@
     font-size:.8rem;
     text-transform:uppercase;
     letter-spacing:1px;
-    color: rgba(238,241,255,.55);
+    color: rgba(244,255,247,.55);
     margin-bottom:8px;
     font-weight:700;
   }
@@ -525,7 +278,7 @@
     border-radius:9px;
     cursor:pointer;
     font-size:.9rem;
-    color: rgba(238,241,255,.85);
+    color: rgba(244,255,247,.85);
   }
   .competition-item-emoji{ font-size:1.05rem; width:22px; text-align:center; flex-shrink:0; }
   .competition-item-nom{ flex:1; }
@@ -557,7 +310,7 @@
     font-weight:500;
     transition: border-color .2s, box-shadow .2s, transform .15s;
   }
-  .autocomplete-wrap input::placeholder{ color: rgba(238,241,255,.4); }
+  .autocomplete-wrap input::placeholder{ color: rgba(244,255,247,.4); }
   .autocomplete-wrap input:focus{
     outline:none;
     border-color: var(--gold);
@@ -585,7 +338,7 @@
     display:flex;
     align-items:center;
     gap:8px;
-    color: rgba(238,241,255,.9);
+    color: rgba(244,255,247,.9);
   }
   .autocomplete-item:hover,
   .autocomplete-item.surlignee{
@@ -615,7 +368,7 @@
     font-size:.8rem;
     text-transform:uppercase;
     letter-spacing:1px;
-    color: rgba(238,241,255,.55);
+    color: rgba(244,255,247,.55);
     margin-bottom:8px;
     font-weight:700;
   }
@@ -623,7 +376,7 @@
     text-transform:none;
     letter-spacing:0;
     font-size:.72rem;
-    color: rgba(238,241,255,.35);
+    color: rgba(244,255,247,.35);
     font-weight:500;
   }
 
@@ -642,7 +395,7 @@
     max-height:160px;
     transition: border-color .2s, box-shadow .2s;
   }
-  textarea#contexteInput::placeholder{ color: rgba(238,241,255,.4); }
+  textarea#contexteInput::placeholder{ color: rgba(244,255,247,.4); }
   textarea#contexteInput:focus{
     outline:none;
     border-color: var(--gold);
@@ -658,7 +411,7 @@
   .puce{
     background: rgba(255,255,255,.06);
     border:1px solid var(--line);
-    color: rgba(238,241,255,.75);
+    color: rgba(244,255,247,.75);
     padding:6px 13px;
     border-radius:999px;
     font-size:.78rem;
@@ -695,7 +448,7 @@
   }
   .ligne-comparaison .texte-comparaison{ font-size:.85rem; }
   .ligne-comparaison .texte-comparaison strong{ color: var(--gold); display:block; font-size:.9rem; }
-  .ligne-comparaison .texte-comparaison span{ color: rgba(238,241,255,.55); font-size:.75rem; }
+  .ligne-comparaison .texte-comparaison span{ color: rgba(244,255,247,.55); font-size:.75rem; }
 
   .switch{
     position:relative;
@@ -733,15 +486,15 @@
     font-size:1.35rem;
     letter-spacing:1.5px;
     color: var(--ink);
-    background: linear-gradient(180deg, #ffd27a, var(--gold) 60%, var(--gold-dark));
-    box-shadow: 0 6px 0 #9c6208, 0 10px 20px rgba(0,0,0,.35);
+    background: linear-gradient(180deg, #ffe27a, var(--gold) 60%, var(--gold-dark));
+    box-shadow: 0 6px 0 #a87700, 0 10px 20px rgba(0,0,0,.35);
     position:relative;
     overflow:hidden;
     transition: transform .12s ease, box-shadow .12s ease;
   }
   .btn-prono:active{
     transform: translateY(4px);
-    box-shadow: 0 2px 0 #9c6208, 0 4px 10px rgba(0,0,0,.3);
+    box-shadow: 0 2px 0 #a87700, 0 4px 10px rgba(0,0,0,.3);
   }
   .btn-prono:disabled{
     cursor:not-allowed;
@@ -766,7 +519,7 @@
     margin:14px auto 0;
     background:none;
     border:none;
-    color: rgba(238,241,255,.5);
+    color: rgba(244,255,247,.5);
     font-size:.8rem;
     text-decoration:underline;
     cursor:pointer;
@@ -839,7 +592,7 @@
     border-radius:50%;
     border:1px solid var(--line);
     background: rgba(0,0,0,.3);
-    color: rgba(238,241,255,.7);
+    color: rgba(244,255,247,.7);
     cursor:pointer;
     font-size:.85rem;
     line-height:1;
@@ -878,7 +631,7 @@
   .bloc-info .titre-bloc{
     display:flex; align-items:center; gap:8px;
     font-size:.78rem; text-transform:uppercase; letter-spacing:1px;
-    font-weight:700; color: rgba(238,241,255,.6);
+    font-weight:700; color: rgba(244,255,247,.6);
     margin-bottom:6px;
   }
   .bloc-info .contenu-bloc{
@@ -909,7 +662,7 @@
     text-transform:uppercase;
     letter-spacing:1px;
     font-weight:700;
-    color: rgba(238,241,255,.6);
+    color: rgba(244,255,247,.6);
     margin-bottom:8px;
   }
   .jauge-confiance .label-confiance .valeur-confiance{
@@ -1083,88 +836,32 @@
     text-align:center;
     margin-top:30px;
     font-size:.75rem;
-    color: rgba(238,241,255,.4);
+    color: rgba(244,255,247,.4);
   }
 
   @media (max-width:480px){
     h1{ font-size:2.3rem; }
     .vs-row{ flex-wrap:wrap; }
     .vs-badge{ order:3; margin:0 auto; }
-    .btn-cta{ flex:1 1 100%; text-align:center; }
-    .navbar-logo{ font-size:.92rem; }
   }
 </style>
 </head>
 <body>
-
-  <nav class="navbar">
-    <a href="#top" class="navbar-logo">🏠 <span>ALAIN <span class="balle">⚽</span> PRONOSTIC IA</span></a>
-    <div class="navbar-liens">
-      <a href="#analyser" class="navbar-lien">⚽ <span class="texte-lien">Analyser</span></a>
-      <button type="button" class="navbar-lien bientot" onclick="afficherBientot()">🎫 <span class="texte-lien">Ticket</span> <span class="puce-bientot">Bientôt</span></button>
-      <button type="button" class="navbar-lien bientot" onclick="afficherBientot()">📚 <span class="texte-lien">Historique</span> <span class="puce-bientot">Bientôt</span></button>
-    </div>
-  </nav>
 
   <div class="ballon-deco b1">⚽</div>
   <div class="ballon-deco b2">⚽</div>
   <div class="ballon-deco b3">⚽</div>
   <div class="ballon-deco b4">⚽</div>
 
-  <div class="wrap" id="top">
+  <div class="wrap">
 
     <header>
-      <div class="badge-stade"><span class="dot"></span> Propulsé par l'IA</div>
+      <div class="badge-stade"><span class="dot"></span> Analyse en direct 🇸🇳</div>
       <h1>ALAIN <span>⚽</span> PRONOSTIC IA</h1>
-      <p class="hero-tagline">Ton analyste football intelligent</p>
-      <p>Analyse les matchs, compare les statistiques et identifie les marchés les plus intéressants grâce aux données.</p>
-
-      <div class="hero-cta-row">
-        <a href="#analyser" class="btn-cta btn-cta-principal">⚽ ANALYSER UN MATCH</a>
-        <a href="#comment-ca-marche" class="btn-cta btn-cta-secondaire">📊 VOIR LES ANALYSES</a>
-      </div>
+      <p>Ton expert football personnel — forme, pronostic &amp; ticket combiné en 10 secondes.</p>
     </header>
 
-    <div class="disclaimer-banner">
-      <span class="icone">⚠️</span>
-      <span><strong>Estimations générées par IA</strong>, à partir des informations disponibles — pas de statistiques officielles en temps réel pour l'instant. Aucun pronostic ne garantit un gain. Pariez de manière responsable.</span>
-    </div>
-
-    <section class="feature-grid" aria-label="Fonctionnalités">
-      <div class="feature-card">
-        <div class="feature-icone">📊</div>
-        <h3>ANALYSE DATA</h3>
-        <p>Forme, buts, domicile/extérieur, confrontations et statistiques.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icone">🤖</div>
-        <h3>IA FOOTBALL</h3>
-        <p>Une analyse automatique basée sur les données disponibles.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icone">🎯</div>
-        <h3>MARCHÉS</h3>
-        <p>1X2, buts, BTTS, corners, cartons et autres marchés disponibles.</p>
-      </div>
-    </section>
-
-    <h2 class="section-titre" id="comment-ca-marche">Comment ça marche</h2>
-    <div class="etapes-liste">
-      <div class="etape-item">
-        <span class="etape-numero">1</span>
-        <div class="etape-texte"><strong>Choisis ton match</strong><span>Compétition, équipe domicile et équipe extérieure.</span></div>
-      </div>
-      <div class="etape-item">
-        <span class="etape-numero">2</span>
-        <div class="etape-texte"><strong>Alain analyse les données disponibles</strong><span>Forme, contexte du match et facteurs que tu ajoutes.</span></div>
-      </div>
-      <div class="etape-item">
-        <span class="etape-numero">3</span>
-        <div class="etape-texte"><strong>Découvre le verdict</strong><span>Pronostic, niveau de confiance et ticket suggéré — comme des estimations, jamais des certitudes.</span></div>
-      </div>
-    </div>
-
-    <div class="card" id="analyser">
+    <div class="card">
 
       <div class="select-wrap">
         <label id="labelCompetition">Compétition</label>
@@ -1242,23 +939,7 @@
     </svg>
   </a>
 
-  <nav class="bottom-nav" aria-label="Navigation principale">
-    <a href="#top" class="bottom-nav-item"><span class="icone-nav">🏠</span>Accueil</a>
-    <a href="#analyser" class="bottom-nav-item"><span class="icone-nav">⚽</span>Analyser</a>
-    <button type="button" class="bottom-nav-item verrouille" onclick="afficherBientot()"><span class="icone-nav">🎫</span>Ticket</button>
-    <button type="button" class="bottom-nav-item verrouille" onclick="afficherBientot()"><span class="icone-nav">📚</span>Historique</button>
-    <button type="button" class="bottom-nav-item verrouille" onclick="afficherBientot()"><span class="icone-nav">⚙️</span>Réglages</button>
-  </nav>
-  <div class="toast-bientot" id="toastBientot">🚧 Bientôt disponible</div>
-
 <script>
-  function afficherBientot(){
-    const toast = document.getElementById('toastBientot');
-    toast.classList.add('visible');
-    clearTimeout(window._toastTimer);
-    window._toastTimer = setTimeout(()=> toast.classList.remove('visible'), 1800);
-  }
-
   // Lien direct Monetag : ouvert dans un nouvel onglet à chaque génération de pronostic valide
   const MONETAG_LIEN = "https://omg10.com/4/10252809";
 
@@ -1650,9 +1331,9 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
   }
 
   function couleurConfiance(valeur){
-    if (valeur >= 70) return '#2fd888';
-    if (valeur >= 40) return '#ffa93c';
-    return '#ff5d6a';
+    if (valeur >= 70) return '#7fd9a0';
+    if (valeur >= 40) return '#ffc93c';
+    return '#ff5d5d';
   }
 
   function traiterResultat(equipeA, equipeB, competition, texteBrut){
