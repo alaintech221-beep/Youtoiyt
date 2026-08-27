@@ -1,16 +1,18 @@
 // ---------------------------------------------------------------------------
-// Fonction Netlify : renvoie la liste des matchs du jour pour les grandes
-// compétitions suivies par football-data.org (plan gratuit).
+// Fonction Netlify : renvoie la liste des matchs des 7 prochains jours pour
+// les grandes compétitions suivies par football-data.org (plan gratuit).
 //
 // Nécessite une variable d'environnement FOOTBALL_DATA_API_KEY sur Netlify.
 // Clé gratuite à obtenir sur https://www.football-data.org/client/register
 // (le plan gratuit couvre les grands championnats européens + coupes
 // d'Europe, avec une limite de 10 requêtes/minute — largement suffisant ici
-// grâce au cache ci-dessous).
+// grâce au cache ci-dessous). Le plan gratuit autorise une fenêtre de dates
+// de 10 jours maximum, on reste large en dessous avec 7 jours.
 // ---------------------------------------------------------------------------
 
 let matchsEnCache = null;   // { data, expire }
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 min : les horaires du jour ne changent pas souvent
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 min : une fenêtre de 7 jours change peu d'une minute à l'autre
+const NB_JOURS_FENETRE = 7;
 
 const ORIGINES_AUTORISEES = [
   "https://alain-pronostic-ia.netlify.app"
@@ -21,15 +23,25 @@ function origineAutorisee(event){
   return ORIGINES_AUTORISEES.some(o => origine.startsWith(o));
 }
 
-function dateDuJourISO(){
-  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+function dateISO(decalageJours){
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + decalageJours);
+  return d.toISOString().slice(0, 10); // YYYY-MM-DD
 }
 
-function formaterHeure(dateISO){
+function formaterHeure(dateISOComplete){
   try {
-    return new Date(dateISO).toLocaleTimeString('fr-FR', {
+    return new Date(dateISOComplete).toLocaleTimeString('fr-FR', {
       hour: '2-digit', minute: '2-digit', timeZone: 'UTC'
     }) + ' UTC';
+  } catch(e){ return ''; }
+}
+
+function formaterJour(dateISOComplete){
+  try {
+    return new Date(dateISOComplete).toLocaleDateString('fr-FR', {
+      weekday: 'short', day: '2-digit', month: 'short', timeZone: 'UTC'
+    });
   } catch(e){ return ''; }
 }
 
@@ -59,7 +71,7 @@ exports.handler = async function(event, context) {
     };
   }
 
-  // --- Cache : un seul appel externe toutes les 10 minutes max ---
+  // --- Cache : un seul appel externe toutes les 30 minutes max ---
   if (matchsEnCache && matchsEnCache.expire > Date.now()) {
     return {
       statusCode: 200,
@@ -68,8 +80,9 @@ exports.handler = async function(event, context) {
     };
   }
 
-  const jour = dateDuJourISO();
-  const url = `https://api.football-data.org/v4/matches?dateFrom=${jour}&dateTo=${jour}`;
+  const dateFrom = dateISO(0);
+  const dateTo = dateISO(NB_JOURS_FENETRE - 1);
+  const url = `https://api.football-data.org/v4/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`;
 
   try {
     const reponse = await fetch(url, {
@@ -85,12 +98,16 @@ exports.handler = async function(event, context) {
       };
     }
 
-    const matchs = (data.matches || []).map(m => ({
-      competition: m.competition?.name || "Autre",
-      equipeA: m.homeTeam?.name || "?",
-      equipeB: m.awayTeam?.name || "?",
-      heure: formaterHeure(m.utcDate)
-    }));
+    const matchs = (data.matches || [])
+      .filter(m => m.status === "SCHEDULED" || m.status === "TIMED")
+      .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate))
+      .map(m => ({
+        jour: formaterJour(m.utcDate),
+        competition: m.competition?.name || "Autre",
+        equipeA: m.homeTeam?.name || "?",
+        equipeB: m.awayTeam?.name || "?",
+        heure: formaterHeure(m.utcDate)
+      }));
 
     matchsEnCache = { data: matchs, expire: Date.now() + CACHE_TTL_MS };
 
