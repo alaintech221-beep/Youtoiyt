@@ -72,6 +72,22 @@
 
   html{
     height:100%;
+    background-color: var(--grass-1);
+    overscroll-behavior-y: none;
+  }
+
+  /* Le motif de fond est posé sur un pseudo-élément vraiment "position:fixed"
+     plutôt que sur background-attachment:fixed. Sur mobile (Chrome/Android
+     surtout), background-attachment:fixed force un repaint du fond à chaque
+     fois que la barre d'adresse se rétracte pendant le scroll, ce qui donne
+     un "saut" visuel très visible en bas de page. Un vrai élément fixed ne
+     scrolle jamais avec le document et évite ce repaint. */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
     background:
       linear-gradient(rgba(255,255,255,.05) 2px, transparent 2px),
       linear-gradient(90deg, rgba(255,255,255,.05) 2px, transparent 2px),
@@ -79,8 +95,6 @@
       repeating-linear-gradient(90deg, var(--grass-1) 0 80px, var(--grass-2) 80px 160px);
     background-size: 60px 60px, 60px 60px, auto, auto;
     background-color: var(--grass-1);
-    background-attachment: fixed;
-    overscroll-behavior-y: none;
   }
 
   body{
@@ -1180,6 +1194,7 @@
   </a>
 
 <script>
+
   const MONETAG_LIEN = "https://omg10.com/4/10252809";
 
   function ouvrirLienMonetag(){
@@ -2159,7 +2174,6 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
         </div>`;
 
     } catch(e){
-      // Enrichissement facultatif : en cas d'échec, on masque plutôt que de polluer la carte
       conteneur.className = '';
       conteneur.innerHTML = '';
     }
