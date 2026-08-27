@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://alain-pronostic-ia.netlify.app/sitemap.xml
