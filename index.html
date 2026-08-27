@@ -844,6 +844,181 @@
     .vs-row{ flex-wrap:wrap; }
     .vs-badge{ order:3; margin:0 auto; }
   }
+
+  /* --- Boutons d'en-tête (Historique / Matchs du jour) --- */
+  .barre-outils-entete{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:14px;
+  }
+  .btn-entete{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background: rgba(0,0,0,.25);
+    border:1px solid var(--line);
+    color: var(--white);
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:.82rem;
+    font-family:'Rubik', sans-serif;
+    font-weight:500;
+    cursor:pointer;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .btn-entete:hover{ background: rgba(0,0,0,.4); border-color: var(--gold); }
+  .badge-compteur{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:999px;
+    background: var(--gold);
+    color: var(--ink);
+    font-size:.68rem;
+    font-weight:700;
+  }
+
+  /* --- Modales (historique / matchs du jour) --- */
+  .modal-generique{
+    position:fixed;
+    inset:0;
+    z-index:80;
+    display:none;
+  }
+  .modal-generique.ouvert{ display:block; }
+  .modal-generique-fond{
+    position:absolute;
+    inset:0;
+    background: rgba(6,16,10,.72);
+    backdrop-filter: blur(3px);
+    animation: apparaitre .2s ease-out;
+  }
+  .modal-generique-panneau{
+    position:relative;
+    z-index:1;
+    max-width:520px;
+    margin: 6vh auto 0;
+    max-height:86vh;
+    display:flex;
+    flex-direction:column;
+    background: linear-gradient(160deg, #12331e, #0c2015);
+    border:1px solid var(--line);
+    border-radius:20px 20px 0 0;
+    box-shadow: 0 -10px 40px rgba(0,0,0,.5);
+    animation: apparaitre .25s ease-out;
+  }
+  @media (min-width:600px){
+    .modal-generique-panneau{ border-radius:20px; margin-top:8vh; }
+  }
+  .modal-generique-entete{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 20px;
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .modal-generique-entete h2{
+    font-family:'Bebas Neue', sans-serif;
+    letter-spacing:.5px;
+    font-size:1.4rem;
+    margin:0;
+    color: var(--gold);
+  }
+  .modal-generique-fermer{
+    background: rgba(0,0,0,.3);
+    border:none;
+    color: var(--white);
+    width:32px; height:32px;
+    border-radius:50%;
+    font-size:1rem;
+    cursor:pointer;
+  }
+  .modal-generique-contenu{
+    overflow-y:auto;
+    padding:16px 20px 22px;
+  }
+
+  /* Historique */
+  .hist-item{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    background: rgba(255,255,255,.04);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 14px;
+    margin-bottom:10px;
+  }
+  .hist-item-principal{ flex:1; cursor:pointer; min-width:0; }
+  .hist-item-entete{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    font-size:.72rem;
+    color: rgba(244,255,247,.55);
+    margin-bottom:4px;
+  }
+  .hist-competition{ color: var(--gold); font-weight:700; }
+  .hist-match{ font-weight:700; margin-bottom:2px; }
+  .hist-pronostic{ font-size:.85rem; color: rgba(244,255,247,.8); }
+  .hist-item-suppr{
+    background:none; border:none;
+    color: rgba(244,255,247,.4);
+    font-size:.9rem;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .hist-item-suppr:hover{ color: var(--red); }
+  .hist-vide{
+    text-align:center;
+    color: rgba(244,255,247,.55);
+    padding:30px 10px;
+    font-size:.9rem;
+  }
+
+  /* Matchs du jour */
+  .mdj-groupe{ margin-bottom:16px; }
+  .mdj-groupe-titre{
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color: var(--gold);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .mdj-match{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    background: rgba(255,255,255,.04);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:11px 14px;
+    margin-bottom:8px;
+    cursor:pointer;
+    transition: border-color .15s ease;
+  }
+  .mdj-match:hover{ border-color: var(--gold); }
+  .mdj-match-equipes{ font-weight:600; font-size:.9rem; }
+  .mdj-match-heure{
+    font-size:.75rem;
+    color: rgba(244,255,247,.6);
+    flex-shrink:0;
+    white-space:nowrap;
+  }
+  .mdj-etat{
+    text-align:center;
+    color: rgba(244,255,247,.6);
+    padding:30px 10px;
+    font-size:.9rem;
+  }
 </style>
 </head>
 <body>
@@ -856,9 +1031,15 @@
   <div class="wrap">
 
     <header>
-      <div class="badge-stade"><span class="dot"></span> Analyse en direct 🇸🇳</div>
+      <div class="badge-stade"><span class="dot"></span> Analyse en direct</div>
       <h1>ALAIN <span>⚽</span> PRONOSTIC IA</h1>
       <p>Ton expert football personnel — forme, pronostic &amp; ticket combiné en 10 secondes.</p>
+      <div class="barre-outils-entete">
+        <button type="button" class="btn-entete" onclick="ouvrirMatchsDuJour()">📅 Matchs du jour</button>
+        <button type="button" class="btn-entete" onclick="ouvrirHistorique()">
+          🕘 Historique <span class="badge-compteur" id="badgeHistorique">0</span>
+        </button>
+      </div>
     </header>
 
     <div class="card">
@@ -929,6 +1110,28 @@
       ⚠️ Pronostics générés par IA à titre indicatif — jouer comporte des risques, mise responsable uniquement.
     </footer>
 
+  </div>
+
+  <div class="modal-generique" id="modalHistorique">
+    <div class="modal-generique-fond" onclick="fermerHistorique()"></div>
+    <div class="modal-generique-panneau">
+      <div class="modal-generique-entete">
+        <h2>🕘 Historique</h2>
+        <button class="modal-generique-fermer" onclick="fermerHistorique()" aria-label="Fermer">✕</button>
+      </div>
+      <div class="modal-generique-contenu" id="histContenu"></div>
+    </div>
+  </div>
+
+  <div class="modal-generique" id="modalMatchsDuJour">
+    <div class="modal-generique-fond" onclick="fermerMatchsDuJour()"></div>
+    <div class="modal-generique-panneau">
+      <div class="modal-generique-entete">
+        <h2>📅 Matchs du jour</h2>
+        <button class="modal-generique-fermer" onclick="fermerMatchsDuJour()" aria-label="Fermer">✕</button>
+      </div>
+      <div class="modal-generique-contenu" id="mdjContenu"></div>
+    </div>
   </div>
 
   <a href="https://wa.me/221700087001?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20Alain%20Pronostic%20IA"
@@ -1351,6 +1554,7 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
       confiance
     };
     resultatsParId.set(id, resultat);
+    ajouterHistorique(resultat);
 
     if (modeComparaison) {
       comparaisonListe.unshift(resultat);
@@ -1675,6 +1879,186 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
     } else {
       copierResultat(boutonEl);
     }
+  }
+
+  // ===========================================================================
+  // HISTORIQUE (côté client, localStorage)
+  // ===========================================================================
+  const CLE_HISTORIQUE = "alainPronosticHistorique";
+  const HISTORIQUE_MAX = 20;
+
+  function chargerHistorique(){
+    try {
+      const brut = localStorage.getItem(CLE_HISTORIQUE);
+      const liste = brut ? JSON.parse(brut) : [];
+      return Array.isArray(liste) ? liste : [];
+    } catch(e){ return []; } // navigation privée / quota plein / localStorage indisponible
+  }
+
+  function sauvegarderHistorique(liste){
+    try { localStorage.setItem(CLE_HISTORIQUE, JSON.stringify(liste.slice(0, HISTORIQUE_MAX))); }
+    catch(e){ /* on ignore silencieusement si le stockage est plein ou indisponible */ }
+  }
+
+  function ajouterHistorique(r){
+    const liste = chargerHistorique();
+    liste.unshift({
+      id: 'h' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      equipeA: r.equipeA,
+      equipeB: r.equipeB,
+      competition: r.competition,
+      forme: r.forme,
+      pronostic: r.pronostic,
+      ticket: r.ticket,
+      confiance: r.confiance,
+      date: Date.now()
+    });
+    sauvegarderHistorique(liste);
+    rafraichirBadgeHistorique();
+  }
+
+  function rafraichirBadgeHistorique(){
+    const badge = document.getElementById('badgeHistorique');
+    if (!badge) return;
+    const n = chargerHistorique().length;
+    badge.textContent = n;
+    badge.style.display = n ? 'inline-flex' : 'none';
+  }
+
+  function formaterDateHistorique(ts){
+    const d = new Date(ts);
+    const auj = new Date();
+    const estAuj = d.toDateString() === auj.toDateString();
+    const heure = d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+    return estAuj ? `Aujourd'hui à ${heure}` : `${d.toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit' })} à ${heure}`;
+  }
+
+  function construireLigneHistoriqueHTML(item){
+    return `
+      <div class="hist-item">
+        <div class="hist-item-principal" onclick="revoirHistorique('${item.id}')">
+          <div class="hist-item-entete">
+            <span>${item.competition ? `<span class="hist-competition">${item.competition.emoji} ${echapperHTML(item.competition.nom)}</span>` : 'Match libre'}</span>
+            <span>${formaterDateHistorique(item.date)}</span>
+          </div>
+          <div class="hist-match">${echapperHTML(item.equipeA)} vs ${echapperHTML(item.equipeB)}</div>
+          ${item.pronostic ? `<div class="hist-pronostic">🏆 ${texteRicheHTML(item.pronostic)}${item.confiance != null ? ` · <span style="color:${couleurConfiance(item.confiance)}">${item.confiance}%</span>` : ''}</div>` : ''}
+        </div>
+        <button class="hist-item-suppr" onclick="supprimerHistoriqueItem('${item.id}')" aria-label="Supprimer cette entrée">✕</button>
+      </div>`;
+  }
+
+  function ouvrirHistorique(){
+    const liste = chargerHistorique();
+    const contenu = document.getElementById('histContenu');
+    contenu.innerHTML = liste.length
+      ? liste.map(construireLigneHistoriqueHTML).join('') + `<button class="btn-vider" onclick="viderHistoriqueTout()">🗑️ Vider l'historique</button>`
+      : `<p class="hist-vide">Aucun pronostic enregistré pour l'instant.<br>Génère ton premier pronostic pour le voir apparaître ici.</p>`;
+    document.getElementById('modalHistorique').classList.add('ouvert');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fermerHistorique(){
+    document.getElementById('modalHistorique').classList.remove('ouvert');
+    document.body.style.overflow = '';
+  }
+
+  function supprimerHistoriqueItem(id){
+    sauvegarderHistorique(chargerHistorique().filter(i => i.id !== id));
+    rafraichirBadgeHistorique();
+    ouvrirHistorique();
+  }
+
+  function viderHistoriqueTout(){
+    sauvegarderHistorique([]);
+    rafraichirBadgeHistorique();
+    ouvrirHistorique();
+  }
+
+  function revoirHistorique(id){
+    const item = chargerHistorique().find(i => i.id === id);
+    if (!item) return;
+    resultatsParId.set(item.id, item);
+    idUniqueActuel = item.id;
+    fermerHistorique();
+    document.getElementById('resultatZone').innerHTML = construireCarteHTML(item, false);
+    document.getElementById('resultatZone').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  document.addEventListener('DOMContentLoaded', rafraichirBadgeHistorique);
+
+  // ===========================================================================
+  // MATCHS DU JOUR (via la fonction Netlify /matchs-du-jour)
+  // ===========================================================================
+  let matchsDuJourCharges = false;
+
+  function ouvrirMatchsDuJour(){
+    document.getElementById('modalMatchsDuJour').classList.add('ouvert');
+    document.body.style.overflow = 'hidden';
+    if (!matchsDuJourCharges) chargerMatchsDuJour();
+  }
+
+  function fermerMatchsDuJour(){
+    document.getElementById('modalMatchsDuJour').classList.remove('ouvert');
+    document.body.style.overflow = '';
+  }
+
+  async function chargerMatchsDuJour(){
+    const contenu = document.getElementById('mdjContenu');
+    contenu.innerHTML = `<p class="mdj-etat">⏳ Chargement des matchs du jour...</p>`;
+
+    try {
+      const reponse = await fetch('/.netlify/functions/matchs-du-jour');
+      const data = await reponse.json();
+
+      if (!reponse.ok || data.error) {
+        throw new Error(data?.error?.message || 'Erreur inconnue');
+      }
+
+      const matchs = Array.isArray(data.matchs) ? data.matchs : [];
+      if (!matchs.length) {
+        contenu.innerHTML = `<p class="mdj-etat">Aucun match trouvé pour aujourd'hui dans les grandes compétitions suivies.<br>Tu peux toujours saisir un match manuellement.</p>`;
+        matchsDuJourCharges = true;
+        return;
+      }
+
+      const parCompetition = new Map();
+      matchs.forEach(m => {
+        const cle = m.competition || 'Autre';
+        if (!parCompetition.has(cle)) parCompetition.set(cle, []);
+        parCompetition.get(cle).push(m);
+      });
+
+      contenu.innerHTML = [...parCompetition.entries()].map(([nomCompetition, liste]) => `
+        <div class="mdj-groupe">
+          <div class="mdj-groupe-titre">${echapperHTML(nomCompetition)}</div>
+          ${liste.map(m => `
+            <div class="mdj-match" onclick="choisirMatchDuJour('${echapperAttribut(m.equipeA)}','${echapperAttribut(m.equipeB)}','${echapperAttribut(nomCompetition)}')">
+              <span class="mdj-match-equipes">${echapperHTML(m.equipeA)} vs ${echapperHTML(m.equipeB)}</span>
+              <span class="mdj-match-heure">${m.heure || ''}</span>
+            </div>`).join('')}
+        </div>`).join('');
+
+      matchsDuJourCharges = true;
+
+    } catch(e){
+      contenu.innerHTML = `<p class="mdj-etat">⚠️ Impossible de récupérer les matchs du jour pour l'instant.<br>Réessaie un peu plus tard, ou saisis un match manuellement.</p>`;
+    }
+  }
+
+  function echapperAttribut(txt){
+    return String(txt || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  }
+
+  function choisirMatchDuJour(equipeA, equipeB, nomCompetition){
+    document.getElementById('equipeA').value = equipeA;
+    document.getElementById('equipeB').value = equipeB;
+
+    const comp = COMPETITIONS.find(c => c.nom === nomCompetition);
+    selectionnerCompetition(comp ? comp.id : "");
+
+    fermerMatchsDuJour();
+    document.querySelector('.card').scrollIntoView({ behavior:'smooth', block:'start' });
   }
 </script>
 </body>
