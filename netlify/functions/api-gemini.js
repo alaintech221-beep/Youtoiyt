@@ -10,6 +10,35 @@ const FENETRE_MS = 60 * 1000;      // fenêtre glissante d'1 minute
 const LIMITE_PAR_FENETRE = 5;      // 5 requêtes/minute/IP (aligné sur le quota gratuit Gemini)
 const CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 2h : un même match posé plusieurs fois réutilise la réponse
 
+// Seule cette origine a le droit d'appeler la fonction. Sans ce contrôle,
+// n'importe qui peut appeler l'URL de la fonction directement (curl, script,
+// autre site) et contourner le rate limiting par IP en changeant d'IP.
+const ORIGINES_AUTORISEES = [
+  "https://alain-pronostic-ia.netlify.app"
+];
+
+// Longueur max raisonnable pour le texte du prompt envoyé à Gemini.
+// Évite qu'un appelant malveillant envoie un payload énorme qui gaspille
+// du quota ou fait planter la fonction.
+const LONGUEUR_MAX_PROMPT = 2000;
+
+function origineAutorisee(event){
+  const origine = event.headers.origin || event.headers.referer || "";
+  return ORIGINES_AUTORISEES.some(o => origine.startsWith(o));
+}
+
+function corpsValide(corpsBrut){
+  let corps;
+  try { corps = JSON.parse(corpsBrut || "{}"); }
+  catch(e){ return false; }
+
+  const texte = corps?.contents?.[0]?.parts?.[0]?.text;
+  if (typeof texte !== "string" || !texte.trim()) return false;
+  if (texte.length > LONGUEUR_MAX_PROMPT) return false;
+
+  return true;
+}
+
 function nettoyerAncien(map, estExpire){
   const maintenant = Date.now();
   for (const [cle, valeur] of map){
@@ -67,6 +96,24 @@ exports.handler = async function(event, context) {
     };
   }
 
+  // --- Origine : seule ton propre site a le droit d'appeler cette fonction ---
+  if (!origineAutorisee(event)) {
+    return {
+      statusCode: 403,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: { message: "Origine non autorisée" } })
+    };
+  }
+
+  // --- Corps de la requête : forme attendue et taille raisonnable ---
+  if (!corpsValide(event.body)) {
+    return {
+      statusCode: 400,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: { message: "Requête invalide" } })
+    };
+  }
+
   const ip = ipDuVisiteur(event);
 
   // --- Rate limiting : protège le quota Gemini contre le spam / les bots ---
@@ -100,7 +147,7 @@ exports.handler = async function(event, context) {
     };
   }
 
-  const MODELE = "gemini-3.5-flash-lite";
+  const MODELE = "gemini-2.5-flash-lite";
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODELE}:generateContent?key=${API_KEY}`;
 
   try {
