@@ -983,6 +983,16 @@
   }
 
   /* Matchs du jour */
+  .mdj-jour{ margin-bottom:22px; }
+  .mdj-jour-titre{
+    font-family:'Bebas Neue', sans-serif;
+    letter-spacing:.5px;
+    font-size:1.05rem;
+    color: var(--white);
+    border-bottom:1px solid var(--line);
+    padding-bottom:6px;
+    margin-bottom:10px;
+  }
   .mdj-groupe{ margin-bottom:16px; }
   .mdj-groupe-titre{
     font-size:.78rem;
@@ -1035,7 +1045,7 @@
       <h1>ALAIN <span>⚽</span> PRONOSTIC IA</h1>
       <p>Ton expert football personnel — forme, pronostic &amp; ticket combiné en 10 secondes.</p>
       <div class="barre-outils-entete">
-        <button type="button" class="btn-entete" onclick="ouvrirMatchsDuJour()">📅 Matchs du jour</button>
+        <button type="button" class="btn-entete" onclick="ouvrirMatchsDuJour()">📅 Prochains matchs</button>
         <button type="button" class="btn-entete" onclick="ouvrirHistorique()">
           🕘 Historique <span class="badge-compteur" id="badgeHistorique">0</span>
         </button>
@@ -1127,7 +1137,7 @@
     <div class="modal-generique-fond" onclick="fermerMatchsDuJour()"></div>
     <div class="modal-generique-panneau">
       <div class="modal-generique-entete">
-        <h2>📅 Matchs du jour</h2>
+        <h2>📅 Prochains matchs</h2>
         <button class="modal-generique-fermer" onclick="fermerMatchsDuJour()" aria-label="Fermer">✕</button>
       </div>
       <div class="modal-generique-contenu" id="mdjContenu"></div>
@@ -2005,7 +2015,7 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
 
   async function chargerMatchsDuJour(){
     const contenu = document.getElementById('mdjContenu');
-    contenu.innerHTML = `<p class="mdj-etat">⏳ Chargement des matchs du jour...</p>`;
+    contenu.innerHTML = `<p class="mdj-etat">⏳ Chargement des prochains matchs...</p>`;
 
     try {
       const reponse = await fetch('/.netlify/functions/matchs-du-jour');
@@ -2017,32 +2027,40 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
 
       const matchs = Array.isArray(data.matchs) ? data.matchs : [];
       if (!matchs.length) {
-        contenu.innerHTML = `<p class="mdj-etat">Aucun match trouvé pour aujourd'hui dans les grandes compétitions suivies.<br>Tu peux toujours saisir un match manuellement.</p>`;
+        contenu.innerHTML = `<p class="mdj-etat">Aucun match trouvé dans les 7 prochains jours pour les grandes compétitions suivies.<br>Tu peux toujours saisir un match manuellement.</p>`;
         matchsDuJourCharges = true;
         return;
       }
 
-      const parCompetition = new Map();
+      // Groupement à deux niveaux : jour -> compétition -> matchs
+      const parJour = new Map();
       matchs.forEach(m => {
-        const cle = m.competition || 'Autre';
-        if (!parCompetition.has(cle)) parCompetition.set(cle, []);
-        parCompetition.get(cle).push(m);
+        const cleJour = m.jour || 'À venir';
+        if (!parJour.has(cleJour)) parJour.set(cleJour, new Map());
+        const parCompetition = parJour.get(cleJour);
+        const cleCompetition = m.competition || 'Autre';
+        if (!parCompetition.has(cleCompetition)) parCompetition.set(cleCompetition, []);
+        parCompetition.get(cleCompetition).push(m);
       });
 
-      contenu.innerHTML = [...parCompetition.entries()].map(([nomCompetition, liste]) => `
-        <div class="mdj-groupe">
-          <div class="mdj-groupe-titre">${echapperHTML(nomCompetition)}</div>
-          ${liste.map(m => `
-            <div class="mdj-match" onclick="choisirMatchDuJour('${echapperAttribut(m.equipeA)}','${echapperAttribut(m.equipeB)}','${echapperAttribut(nomCompetition)}')">
-              <span class="mdj-match-equipes">${echapperHTML(m.equipeA)} vs ${echapperHTML(m.equipeB)}</span>
-              <span class="mdj-match-heure">${m.heure || ''}</span>
+      contenu.innerHTML = [...parJour.entries()].map(([nomJour, parCompetition]) => `
+        <div class="mdj-jour">
+          <div class="mdj-jour-titre">${echapperHTML(nomJour)}</div>
+          ${[...parCompetition.entries()].map(([nomCompetition, liste]) => `
+            <div class="mdj-groupe">
+              <div class="mdj-groupe-titre">${echapperHTML(nomCompetition)}</div>
+              ${liste.map(m => `
+                <div class="mdj-match" onclick="choisirMatchDuJour('${echapperAttribut(m.equipeA)}','${echapperAttribut(m.equipeB)}','${echapperAttribut(nomCompetition)}')">
+                  <span class="mdj-match-equipes">${echapperHTML(m.equipeA)} vs ${echapperHTML(m.equipeB)}</span>
+                  <span class="mdj-match-heure">${m.heure || ''}</span>
+                </div>`).join('')}
             </div>`).join('')}
         </div>`).join('');
 
       matchsDuJourCharges = true;
 
     } catch(e){
-      contenu.innerHTML = `<p class="mdj-etat">⚠️ Impossible de récupérer les matchs du jour pour l'instant.<br>Réessaie un peu plus tard, ou saisis un match manuellement.</p>`;
+      contenu.innerHTML = `<p class="mdj-etat">⚠️ Impossible de récupérer les prochains matchs pour l'instant.<br>Réessaie un peu plus tard, ou saisis un match manuellement.</p>`;
     }
   }
 
