@@ -653,6 +653,19 @@
   }
   .bloc-info .contenu-bloc strong{ color: var(--gold); }
 
+  .h2h-liste{ display:flex; flex-direction:column; gap:6px; }
+  .h2h-ligne{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    font-size:.85rem;
+  }
+  .h2h-date{ color: rgba(244,255,247,.5); flex-shrink:0; font-size:.78rem; }
+  .h2h-score{ color: var(--white); text-align:right; }
+  .h2h-score strong{ color: var(--gold); }
+  .h2h-etat{ font-size:.85rem; color: rgba(244,255,247,.6); }
+
   .pronostic-principal{
     text-align:center;
     background: linear-gradient(135deg, rgba(255,201,60,.18), rgba(255,201,60,.04));
@@ -1054,7 +1067,7 @@
   <div class="wrap">
 
     <header>
-      <div class="badge-stade"><span class="dot"></span> Analyse en direct</div>
+      <div class="badge-stade"><span class="dot"></span> Analyse en direct 🇸🇳</div>
       <h1>ALAIN <span>⚽</span> PRONOSTIC IA</h1>
       <p>Ton expert football personnel — forme, pronostic &amp; ticket combiné en 10 secondes.</p>
       <div class="barre-outils-entete">
@@ -1167,7 +1180,6 @@
   </a>
 
 <script>
-  // Lien direct Monetag : ouvert dans un nouvel onglet à chaque génération de pronostic valide
   const MONETAG_LIEN = "https://omg10.com/4/10252809";
 
   function ouvrirLienMonetag(){
@@ -1592,6 +1604,7 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
       if (idUniqueActuel) resultatsParId.delete(idUniqueActuel);
       idUniqueActuel = id;
       document.getElementById('resultatZone').innerHTML = construireCarteHTML(resultat, false);
+      chargerHeadToHead(id, equipeA, equipeB);
     }
   }
 
@@ -1623,6 +1636,8 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
         </div>
 
         ${r.pronostic ? construireJaugeHTML(r.confiance) : ''}
+
+        <div id="h2h-${r.id}"></div>
 
         <div class="bloc-info">
           <div class="titre-bloc">📊 État de forme</div>
@@ -1701,6 +1716,8 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
 
     conteneur.innerHTML = tableau + cartes + `
       <button class="btn-vider" onclick="viderComparaison()">Vider la comparaison</button>`;
+
+    comparaisonListe.forEach(r => chargerHeadToHead(r.id, r.equipeA, r.equipeB));
   }
 
   function supprimerDeComparaison(id){
@@ -2007,6 +2024,7 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
     fermerHistorique();
     document.getElementById('resultatZone').innerHTML = construireCarteHTML(item, false);
     document.getElementById('resultatZone').scrollIntoView({ behavior:'smooth', block:'start' });
+    chargerHeadToHead(item.id, item.equipeA, item.equipeB);
   }
 
   document.addEventListener('DOMContentLoaded', rafraichirBadgeHistorique);
@@ -2091,6 +2109,60 @@ TICKET: [une suggestion de pari combiné, ex: "Les deux équipes marquent" ou "P
 
     fermerMatchsDuJour();
     document.querySelector('.card').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  // ===========================================================================
+  // CONFRONTATIONS DIRECTES (head-to-head, via la fonction Netlify)
+  // ===========================================================================
+  async function chargerHeadToHead(id, equipeA, equipeB){
+    const conteneur = document.getElementById('h2h-' + id);
+    if (!conteneur) return;
+
+    conteneur.className = 'bloc-info';
+    conteneur.innerHTML = `
+      <div class="titre-bloc">🤝 Confrontations directes</div>
+      <div class="contenu-bloc h2h-etat">⏳ Recherche des dernières confrontations...</div>`;
+
+    try {
+      const params = new URLSearchParams({ equipeA, equipeB });
+      const reponse = await fetch(`/.netlify/functions/head-to-head?${params.toString()}`);
+      const data = await reponse.json();
+
+      if (!reponse.ok || data.error) throw new Error(data?.error?.message || 'Erreur');
+
+      // Une des deux équipes n'est pas reconnue (championnat non couvert, etc.)
+      // -> on masque discrètement le bloc plutôt que d'afficher une erreur.
+      if (!data.disponible) {
+        conteneur.className = '';
+        conteneur.innerHTML = '';
+        return;
+      }
+
+      const confrontations = data.confrontations || [];
+      if (!confrontations.length) {
+        conteneur.innerHTML = `
+          <div class="titre-bloc">🤝 Confrontations directes</div>
+          <div class="contenu-bloc h2h-etat">Aucune confrontation récente trouvée entre ces deux équipes.</div>`;
+        return;
+      }
+
+      conteneur.innerHTML = `
+        <div class="titre-bloc">🤝 Confrontations directes</div>
+        <div class="contenu-bloc">
+          <div class="h2h-liste">
+            ${confrontations.map(c => `
+              <div class="h2h-ligne">
+                <span class="h2h-date">${c.date}</span>
+                <span class="h2h-score">${echapperHTML(c.domicile)} <strong>${c.scoreDomicile ?? '?'}-${c.scoreExterieur ?? '?'}</strong> ${echapperHTML(c.exterieur)}</span>
+              </div>`).join('')}
+          </div>
+        </div>`;
+
+    } catch(e){
+      // Enrichissement facultatif : en cas d'échec, on masque plutôt que de polluer la carte
+      conteneur.className = '';
+      conteneur.innerHTML = '';
+    }
   }
 </script>
 </body>
